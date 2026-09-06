@@ -1,0 +1,55 @@
+# Multi-node: submit with `ray job submit` (see scripts/submit_job.sh) or run
+# from a head node with RAY_ADDRESS set. Storage root should be shared (NFS/S3).
+run_date: 2026-09-05
+
+ray:
+  address: auto
+  namespace: fraudflow
+  working_dir: .
+
+data_context:
+  target_max_block_size_mb: 128
+  max_errored_blocks: 0
+  enable_progress_bars: true
+  cpu_limit: 64
+  object_store_memory_limit_mb: 32768
+  shuffle_partitions: 128
+  max_shuffle_aggregators: 16
+
+storage:
+  root: /mnt/shared/fraudflow
+
+datagen:
+  num_customers: 200000
+  num_merchants: 5000
+  days: 14
+  rows_per_day: 5000000
+  files_per_day: 32
+  fraud_rate: 0.012
+  duplicate_rate: 0.002
+  corrupt_rate: 0.003
+  seed: 42
+
+features:
+  lookback_days: 7
+  join_num_partitions: 128
+  dedupe_partitions: 64
+
+scoring:
+  batch_size: 8192
+  min_actors: 4
+  max_actors: 32
+  num_cpus_per_actor: 2
+  review_threshold: 0.5
+  block_threshold: 0.9
+
+training:
+  train_days: 5
+  sample_fraction: 0.2
+  holdout_fraction: 0.2
+  max_rows: 2000000
+
+sink:
+  partition_cols: [decision]
+  max_rows_per_file: 500000
+  top_merchants: 25

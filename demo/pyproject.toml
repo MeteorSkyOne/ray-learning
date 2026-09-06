@@ -1,0 +1,59 @@
+[project]
+name = "fraudflow"
+version = "0.1.0"
+description = "Production-style batch fraud-scoring pipeline built on Ray Core + Ray Data"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "ray[data]>=2.48",
+    "pyarrow>=17",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "scikit-learn>=1.5",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+    "aiohttp>=3.9",
+    "fsspec[http]>=2026.7.0",
+]
+
+[project.scripts]
+fraudflow = "fraudflow.cli:app"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "ruff>=0.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/fraudflow"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "ruff>=0.5",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["e2e: slow end-to-end tests that start a local Ray cluster"]
+
+[tool.uv.workspace]
+members = []

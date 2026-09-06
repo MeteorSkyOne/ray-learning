@@ -1,0 +1,54 @@
+# Local development: single-node Ray, small data, quick turnaround.
+run_date: 2026-09-05
+
+ray:
+  address: null          # start a local cluster
+  namespace: fraudflow
+  num_cpus: 8            # pinned so runs are reproducible across machines
+  object_store_memory_mb: 2048   # cap plasma; default is 30% of RAM
+
+data_context:
+  target_max_block_size_mb: 64
+  max_errored_blocks: 0
+  enable_progress_bars: false
+  cpu_limit: null
+  shuffle_partitions: 8
+  max_shuffle_aggregators: 2   # 4 shuffle ops/DAG x 2 actors -> fits in 8 CPUs with room for map tasks
+
+storage:
+  root: ./data
+
+datagen:
+  num_customers: 5000
+  num_merchants: 400
+  days: 10
+  rows_per_day: 60000
+  files_per_day: 4
+  fraud_rate: 0.015
+  duplicate_rate: 0.003
+  corrupt_rate: 0.004
+  seed: 42
+
+features:
+  lookback_days: 7
+  join_num_partitions: 8
+  dedupe_partitions: 8
+
+scoring:
+  batch_size: 4096
+  min_actors: 1
+  max_actors: 3
+  num_cpus_per_actor: 1
+  review_threshold: 0.5
+  block_threshold: 0.9
+
+training:
+  train_days: 3
+  sample_fraction: 1.0
+  holdout_fraction: 0.2
+  max_rows: 500000
+
+sink:
+  partition_cols: [decision]
+  max_rows_per_file: 100000
+  top_merchants: 10
