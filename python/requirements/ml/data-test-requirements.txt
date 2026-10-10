@@ -53,7 +53,7 @@ numcodecs==0.13.1 ; python_version < '3.11'
 # time, which our pinned av (18.x) does not expose, so 0.6.0 fails to import
 # against Ray's av. The 0.5.x line (what the datasource is built and tested
 # against) decodes via torchcodec and imports cleanly.
-lerobot>=0.5.0,<0.6; python_version >= "3.12"
+lerobot>=0.6.1,<0.7; python_version >= "3.12"
 # torchcodec 0.10.0 is built for torch 2.10 (its libtorchcodec fails to load
 # against our pinned torch 2.9.0 with a c10 ABI symbol error); cap to the 0.9.x
 # line, which lerobot 0.5.1 allows (torchcodec>=0.3,<0.11) and which loads on
